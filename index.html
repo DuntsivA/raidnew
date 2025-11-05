@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Лічильник уламків — v2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <img src="raid-logo.png" alt="Raid: Shadow Legends" width="52" height="52">
+      </div>
+      <div>
+        <h1>Лічильник уламків</h1>
+        <div class="muted">Натисни іконку, щоб вибрати тип. Дані зберігаються у браузері.</div>
+      </div>
+    </header>
+
+    <div class="card main-card">
+      <!-- Іконки типів -->
+      <div class="icons" id="iconsRow" aria-hidden>
+        <div class="icon" data-type="anc" title="Ancient (синій)"><img src="Ancient_Shard-icon.webp" alt="Ancient"></div>
+        <div class="icon" data-type="void" title="Void (темний)"><img src="Void_Shard-icon.webp" alt="Void"></div>
+        <div class="icon" data-type="primal" title="Primal (червоний)"><img src="Primal_Shard-icon.webp" alt="Primal"></div>
+        <div class="icon" data-type="sac" title="Sacred (золотий)"><img src="Sacred_Shard-icon.webp" alt="Sacred"></div>
+      </div>
+
+      <div class="grid">
+        <!-- Ліва колона: введення і Відкрито -->
+        <div class="left-col">
+          <label for="countInput">Кількість відкритих уламків</label>
+          <input id="countInput" type="number" min="0" value="0" />
+
+          <div class="controls">
+            <button id="btnAdd" class="btn btn-add">+1</button>
+            <button id="btnAdd10" class="btn btn-add">+10</button>
+            <button id="btnReset" class="btn btn-reset">Скинути</button>
+            <div class="spacer"></div>
+            <div class="muted small">Збереження: <strong>localStorage</strong></div>
+          </div>
+
+          <div class="muted tip">Порада: при отриманні НЕ-гарантованої нагороди натисни <strong>Скинути</strong>.</div>
+
+          <!-- Відкрито -->
+          <div class="opened-block">
+            <div class="opened-title">Відкрито</div>
+            <div class="opened-row" id="openedRow">
+              <!-- тут динамічно вставляються 4 іконки з кількістю -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Права колона: відображення шансів -->
+        <div class="right-col">
+          <div class="muted">Поточні дані для вибраного типу</div>
+          <div class="big" id="displayCount">Кількість: 0</div>
+
+          <div class="chance-section">
+            <div class="muted">Шанси</div>
+            <div id="chanceBox" class="chance-box"></div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="muted">Прогрес до 100%</div>
+            <div class="progress" aria-hidden>
+              <i id="progressBar" style="width:0%"></i>
+            </div>
+            <div id="remainingText" class="muted remaining-text"></div>
+          </div>
+
+          <div style="margin-top:14px" class="muted">Примітка: індивідуальне скидання — кнопка «Скинути» для поточного типу.</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>Бажаю вдалих відкриттів.</footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
