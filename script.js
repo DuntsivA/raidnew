@@ -1,7 +1,7 @@
 // mapping between data-type and storage keys
 const MAP = {
   'anc': 'count_anc',
-  'void': 'count_void', 
+  'void': 'count_void',
   'primal': 'count_primal',
   'sac': 'count_sac'
 };
@@ -24,7 +24,7 @@ Object.values(MAP).forEach(k => {
   if (localStorage.getItem(k) === null) localStorage.setItem(k, '0');
 });
 
-// Load active from storage if present  
+// Load active from storage if present
 if (localStorage.getItem('active_shard')) active = localStorage.getItem('active_shard');
 
 // Helper: set active icon UI
@@ -124,7 +124,35 @@ function computeProgress(type, count) {
   return 0;
 }
 
-// Оновлений рендер для відображення прогресу
+// Render "Відкрито" small icons + counts
+function renderOpenedRow() {
+  const order = ['anc', 'void', 'primal', 'sac'];
+  openedRow.innerHTML = '';
+  order.forEach(key => {
+    const val = parseInt(localStorage.getItem(MAP[key]) || '0', 10);
+    const div = document.createElement('div');
+    div.className = 'opened-item';
+    const img = document.createElement('img');
+    const fileMap = {
+      'anc': 'Ancient_Shard-icon.webp',
+      'void': 'Void_Shard-icon.webp',
+      'primal': 'Primal_Shard-icon.webp',
+      'sac': 'Sacred_Shard-icon.webp'
+    };
+    img.src = fileMap[key];
+    img.alt = key;
+    img.width = 32;
+    img.height = 32;
+    const span = document.createElement('div');
+    span.className = 'opened-count';
+    span.textContent = val;
+    div.appendChild(img);
+    div.appendChild(span);
+    openedRow.appendChild(div);
+  });
+}
+
+// Main render
 function render() {
   const count = parseInt(localStorage.getItem(MAP[active]) || '0', 10);
   displayCount.textContent = 'Кількість: ' + count;
@@ -142,7 +170,11 @@ function render() {
     const remLeg = remainingForSingle(info.legBase, info.legThreshold, info.legStep, count);
     const remMy = remainingForSingle(info.mythBase, info.mythThreshold, info.mythStep, count);
     
-    remainingText.innerHTML = `Прогрес: <strong>${progress.toFixed(1)}%</strong><br>
+    // Додаємо інформацію про загальний прогрес
+    let maxCount = 210; // Для primal беремо міфічний максимум
+    const remainingTotal = Math.max(0, maxCount - count);
+    
+    remainingText.innerHTML = `Загальний прогрес: <strong>${progress.toFixed(1)}%</strong><br>
                                До 100% легендарний: <strong>${remLeg}</strong> відкриттів<br>
                                До 100% міфічний: <strong>${remMy}</strong> відкриттів`;
   } else {
@@ -180,7 +212,7 @@ function addToCounter(value) {
     ic.animate(
       [
         { transform: 'scale(1)' },
-        { transform: 'scale(1.10)' }, 
+        { transform: 'scale(1.10)' },
         { transform: 'scale(1)' }
       ],
       { duration: 340, easing: 'ease-out' }
@@ -206,7 +238,7 @@ btnReset.addEventListener('click', () => {
   }
 });
 
-// setActive wrapper to change progress color + UI  
+// setActive wrapper to change progress color + UI
 function setActive(type) {
   setActiveIcon(type);
   const bar = document.getElementById('progressBar');
@@ -234,3 +266,35 @@ countInput.addEventListener('keypress', (e) => {
     }
   }
 });
+
+// Додаємо можливість швидкого перемикання при кліку на елементи "Відкрито"
+document.addEventListener('click', (e) => {
+  const openedItem = e.target.closest('.opened-item');
+  if (openedItem) {
+    const img = openedItem.querySelector('img');
+    if (img) {
+      const type = Object.keys(fileMap).find(key => fileMap[key] === img.src.split('/').pop());
+      if (type) {
+        setActive(type);
+        
+        // Анімація кліку
+        openedItem.animate(
+          [
+            { transform: 'scale(1)' },
+            { transform: 'scale(0.95)' },
+            { transform: 'scale(1)' }
+          ],
+          { duration: 200, easing: 'ease-out' }
+        );
+      }
+    }
+  }
+});
+
+// Допоміжний об'єкт для пошуку типу за назвою файлу
+const fileMap = {
+  'anc': 'Ancient_Shard-icon.webp',
+  'void': 'Void_Shard-icon.webp',
+  'primal': 'Primal_Shard-icon.webp',
+  'sac': 'Sacred_Shard-icon.webp'
+};
